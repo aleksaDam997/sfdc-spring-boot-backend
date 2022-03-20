@@ -16,14 +16,23 @@ public class NNServiceImplementation implements NNService{
 
 	@Override
 	public Prediction trainNetwork(TrainingDto trainingDto) {
-		neuralNetwork = new Network(2, 4, 4, 2);
+		
+		int[] model = new int[trainingDto.getNodes().length + 1];
+		
+		model[0] = trainingDto.getInputs()[0].length;
+		
+		for(int i = 1; i < model.length; i++) {
+			model[i] = trainingDto.getNodes()[i - 1];
+		}
+		
+		neuralNetwork = new Network(model);
         
         //dodao
         double[][] inputi = trainingDto.getInputs();
         
         double[][]labels = trainingDto.getLabels();
 
-        for(int i = 0; i < 50000; i++){
+        for(int i = 0; i < trainingDto.getEpochs(); i++){
 
             //Biramo nasumicnu kombinaciju xor-a
             Random dice = new Random();

@@ -8,11 +8,15 @@ public class TrainingDto {
 	
 	private double[][] inputs;
 	private double[][] labels;
+	private int epochs;
+	private int[] nodes;
 	
-	public TrainingDto(double[][] inputs, double[][] labels) {
+	public TrainingDto(double[][] inputs, double[][] labels, int epochs, int[] nodes) {
 		super();
 		this.inputs = inputs;
 		this.labels = labels;
+		this.epochs = epochs;
+		this.nodes = nodes;
 	}
 	public TrainingDto() {
 		super();
@@ -29,6 +33,18 @@ public class TrainingDto {
 	}
 	public void setLabels(double[][] labels) {
 		this.labels = labels;
+	}
+	public int getEpochs() {
+		return epochs;
+	}
+	public void setEpochs(int epochs) {
+		this.epochs = epochs;
+	}
+	public int[] getNodes() {
+		return nodes;
+	}
+	public void setNodes(int[] nodes) {
+		this.nodes = nodes;
 	}
 	
 	

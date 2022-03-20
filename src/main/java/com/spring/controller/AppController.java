@@ -58,9 +58,9 @@ public class AppController {
 	private NNServiceImplementation nnService;
 	
 	@GetMapping("/add/data/{id}")
-	public ResponseEntity<Data> addData(@RequestParam(value = "value1", defaultValue = "0") double value1, @RequestParam(value = "value2", defaultValue = "0") double value2, 
-			@RequestParam(value = "value3", defaultValue = "0") double value3, @RequestParam(value = "value4", defaultValue = "0") double value4, @RequestParam(value = "value5", defaultValue = "0") double value5, 
-			@RequestParam(value = "value6", defaultValue = "0") double value6, @RequestParam(value = "value7", defaultValue = "0") double value7, @PathVariable("id") int categoryId) throws Exception {
+	public ResponseEntity<Data> addData(@RequestParam(value = "value1", defaultValue = "-1000") double value1, @RequestParam(value = "value2", defaultValue = "-1000") double value2, 
+			@RequestParam(value = "value3", defaultValue = "-1000") double value3, @RequestParam(value = "value4", defaultValue = "-1000") double value4, @RequestParam(value = "value5", defaultValue = "-1000") double value5, 
+			@RequestParam(value = "value6", defaultValue = "-1000") double value6, @RequestParam(value = "value7", defaultValue = "-1000") double value7, @PathVariable("id") int categoryId) throws Exception {
 		return ResponseEntity.ok().body(this.appService.addData(value1, value2, value3, value4, value5, value6, value7, categoryId));
 	}
 	
