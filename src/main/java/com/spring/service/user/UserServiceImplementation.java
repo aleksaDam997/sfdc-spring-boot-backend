@@ -35,6 +35,7 @@ public class UserServiceImplementation implements UserService, UserDetailsServic
 		User user = userRepository.findByUsername(username);
 		
 		if(user == null) {
+
 			log.error("User not found in db");
 			throw new UsernameNotFoundException("User not found in db");
 		}else {
@@ -42,11 +43,11 @@ public class UserServiceImplementation implements UserService, UserDetailsServic
 		}
 		
 		Collection<SimpleGrantedAuthority> authorities = new ArrayList<>();
-		
-		authorities.add(new SimpleGrantedAuthority(user.getRole()));
+		user.getRoles().forEach(role -> authorities.add(new SimpleGrantedAuthority(role.getGroupName())));
 		
 		return new org.springframework.security.core.userdetails.User(user.getUsername(), user.getPassword(), authorities);
 	}
+	
 
 	@Override
 	public User getUserByUsername(String username) {

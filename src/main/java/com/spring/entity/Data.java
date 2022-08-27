@@ -14,8 +14,6 @@ import javax.persistence.Table;
 
 import org.hibernate.annotations.CreationTimestamp;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
-
 @Entity
 @Table(name = "data")
 public class Data {
@@ -25,7 +23,6 @@ public class Data {
 	@Column(name = "data_id")
 	private int dataId;
 
-	@JsonBackReference
 	@ManyToOne(cascade = CascadeType.ALL)
 	@JoinColumn(name = "categoryId", referencedColumnName = "category_id")
 	private Category category;

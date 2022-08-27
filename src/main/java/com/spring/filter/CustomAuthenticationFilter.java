@@ -13,13 +13,17 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.web.util.UrlPathHelper;
 
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
@@ -29,6 +33,9 @@ import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 public class CustomAuthenticationFilter extends UsernamePasswordAuthenticationFilter {
+	
+	Logger logger = LoggerFactory.getLogger(CustomAuthenticationFilter.class);
+
 
 	private final AuthenticationManager authenticationManager;
 	
@@ -55,13 +62,23 @@ public class CustomAuthenticationFilter extends UsernamePasswordAuthenticationFi
 	@Override
 	protected void unsuccessfulAuthentication(HttpServletRequest request, HttpServletResponse response,
 			AuthenticationException failed) throws IOException, ServletException {
-		Map<String, String> tokens = new HashMap<>();
-		tokens.put("status", "login");
-		tokens.put("message", "Prijava nije spješna, pokušajte ponovo..");
 		
-		response.setContentType("application/json");
+		UrlPathHelper urlPathHelper = new UrlPathHelper();
+
+	    logger.debug("failed authentication while attempting to access "
+	            + urlPathHelper.getPathWithinApplication((HttpServletRequest) request));
+
+	    //Add more descriptive message
+	    response.sendError(HttpServletResponse.SC_UNAUTHORIZED,
+	            "Authentication Failed");
 		
-		new ObjectMapper().writeValue(response.getOutputStream(), tokens);
+//		Map<String, String> tokens = new HashMap<>();
+//		tokens.put("status", "login");
+//		tokens.put("message", "Prijava nije spješna, pokušajte ponovo..");
+//		
+//		response.setContentType("application/json");
+//		
+//		new ObjectMapper().writeValue(response.getOutputStream(), tokens);
 	}
 
 	@Override
@@ -71,22 +88,22 @@ public class CustomAuthenticationFilter extends UsernamePasswordAuthenticationFi
 		User user = (User) authResult.getPrincipal();
 		Algorithm algorithm = Algorithm.HMAC256("secret".getBytes());
 		
-		List<String> l = user.getAuthorities().stream().map(GrantedAuthority::getAuthority).collect(Collectors.toList());
-		
 		String accessToken = JWT.create()
 				.withSubject(user.getUsername())
-				.withExpiresAt(new Date(System.currentTimeMillis() + 20 * 1000 * 60))
-				.withClaim("id", request.getRemoteAddr())
-				.withIssuer(request.getRequestURI().toString())
-				.withClaim("role", user.getAuthorities().stream().map(GrantedAuthority::getAuthority).collect(Collectors.toList()))
+				.withExpiresAt(new Date(System.currentTimeMillis() + 15 * 1000 * 60))
+				.withIssuer(request.getRequestURL().toString())
+				.withClaim("roles", user.getAuthorities().stream().map(GrantedAuthority::getAuthority).collect(Collectors.toList()))
 				.sign(algorithm);
+		
+//		.withClaim("id", request.getRemoteAddr())
+
 		
 		String refreshToken = JWT.create()
 				.withSubject(user.getUsername())
 				.withExpiresAt(new Date(System.currentTimeMillis() + 45 * 1000 * 60))
-				.withClaim("id", request.getRemoteAddr())
-				.withIssuer(request.getRequestURI().toString())
+				.withIssuer(request.getRequestURL().toString())
 				.sign(algorithm);
+		
 		
 		Map<String, String> tokens = new HashMap<>();
 		tokens.put("status", "ok");
