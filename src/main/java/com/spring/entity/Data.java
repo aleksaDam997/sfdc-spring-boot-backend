@@ -19,7 +19,7 @@ import org.hibernate.annotations.CreationTimestamp;
 public class Data {
 	
 	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	@GeneratedValue(strategy = GenerationType.AUTO)
 	@Column(name = "data_id")
 	private int dataId;
 

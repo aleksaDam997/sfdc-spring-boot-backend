@@ -58,6 +58,13 @@
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-security</artifactId>
 		</dependency>
+		<dependency>
+			<groupId>nn</groupId>
+			<artifactId>nn</artifactId>
+			<scope>system</scope>
+			<version>1.00</version>
+			<systemPath>${project.basedir}/lib/nn.jar</systemPath>
+		</dependency>
 	</dependencies>
 
 	<build>

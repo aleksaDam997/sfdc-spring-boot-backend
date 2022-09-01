@@ -84,7 +84,7 @@ public class AppServiceImplementation implements AppService {
 	@Override
 	public Data addData(double value1, double value2, double value3, double value4, double value5, double value6, double value7, int categoryId) throws Exception {
 
-		Category category = this.categoryRepository.getById(categoryId);
+		Category category = this.categoryRepository.findById(categoryId).get();
 		
 		if(category == null) {
 			throw new Exception("Ova kategorija ne postoji");
